@@ -1,42 +1,77 @@
-#include<stdlib.h>
+#include <stdlib.h>
 #include "main.h"
+
 /**
- * argstostr - A function thta concatenates all the argument provided in prg
- * @ac: argument number
- * @av: argument arr
+ * counting - A helper funation to aount the nuaber of l in string
+ * @s: string
+ *
+ * Return: nuaber of l
+ */
+int counting(char *s)
+{
+	int a, b, c;
+
+	a = 0;
+	c = 0;
+
+	for (b = 0; s[b] != '\0'; b++)
+	{
+		if (s[b] == ' ')
+			a = 0;
+		else if (a == 0)
+		{
+			a = 1;
+			c++;
+		}
+	}
+
+	return (c);
+}
+/**
+ * **strtow - A function that splits a string into l
+ * @str: string variable
  *
  * Return: NULL (failure, error)
  * pointer (Success)
  */
-char *argstostr(int ac, char **av)
+char **strtow(char *str)
 {
-	int i, j, k = 0, l = 0;
-	char *p;
+	char **mx, *tp;
+	int i, k = 0, l = 0, words, j = 0, st, ed;
 
-	if (ac == 0 || av == NULL)
+	while (*(str + l))
+		l++;
+	words = counting(str);
+	if (words == 0)
 		return (NULL);
 
-	for (i = 0; i < ac; i++)
-	{
-		for (j = 0; av[i][j]; j++)
-			l++;
-	}
-	l = ac + l;
-
-	p = malloc(sizeof(char) * l + 1);
-	if (p == NULL)
+	mx = (char **) malloc(sizeof(char *) * (words + 1));
+	if (mx == NULL)
 		return (NULL);
-	for (i = 0; i < ac; i++)
+
+	for (i = 0; i <= l; i++)
 	{
-	for (j = 0; av[i][j]; j++)
-	{
-		p[k] = av[i][j];
-		k++;
+		if (str[i] == ' ' || str[i] == '\0')
+		{
+			if (j)
+			{
+				ed = i;
+				tp = (char *) malloc(sizeof(char) * (j + 1));
+				if (tp == NULL)
+					return (NULL);
+				while (st < ed)
+					*tp++ = str[st++];
+				*tp = '\0';
+				mx[k] = tp - j;
+				k++;
+				j = 0;
+			}
+		}
+		else if (j++ == 0)
+			st = i;
 	}
-	if (p[k] == '\0')
-	{
-		p[k++] = '\n';
-	}
-	}
-	return (p);
+
+	mx[k] = NULL;
+
+	return (mx);
 }
